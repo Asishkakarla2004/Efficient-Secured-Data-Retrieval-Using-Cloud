@@ -85,7 +85,7 @@ flask --app app run
 
 - Create a new Web Service from your GitHub repo
 - Set build command: `pip install -r requirements.txt && flask db upgrade`
-- Set start command: `gunicorn app:app`
+- Set start command: `gunicorn wsgi:app`
 - Add environment variables from `.env` (set `FLASK_APP=app.py` and `DATABASE_URL` to your Render PostgreSQL database URL)
 - Create a Render PostgreSQL database and connect it
 - The app will use PostgreSQL instead of MySQL on Render
