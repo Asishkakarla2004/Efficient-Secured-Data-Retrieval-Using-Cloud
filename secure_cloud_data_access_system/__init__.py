@@ -16,7 +16,8 @@ def create_app() -> Flask:
     load_dotenv()
     app = Flask(__name__, instance_relative_config=False)
 
-    database_url = os.getenv("DATABASE_URL")
+    database_url = os.getenv("DATABASE_URL", "")
+    database_url = database_url.strip().strip('"').strip("'")
     if database_url:
         if database_url.startswith("postgres://"):
             database_url = database_url.replace("postgres://", "postgresql://", 1)
