@@ -16,7 +16,7 @@ Secure Cloud Data Access System is a full-stack Flask and MySQL application for 
 ## Tech Stack
 
 - Backend: Python, Flask, SQLAlchemy
-- Database: MySQL
+- Database: PostgreSQL on Render (MySQL supported locally)
 - Frontend: HTML, Tailwind CSS, JavaScript
 - Security: bcrypt, Fernet, Blowfish via PyCryptodome
 
