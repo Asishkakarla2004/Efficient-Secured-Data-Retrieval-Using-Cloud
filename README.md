@@ -78,30 +78,6 @@ flask --app app run
 
 - Admin dashboard expects a user with `role='admin'` to exist in the `users` table, or you can extend the current `admin` table login flow.
 - Failed logins and encryption activity are tracked through `access_logs` and `encryption_logs`.
-
-## Deployment
-
-### Render
-
-- Create a new Web Service
-- Set environment variables from `.env`
-- Use a start command like `gunicorn app:app`
-- Connect to a managed MySQL service
-
-### Railway
-
-- Create a Python service
-- Add MySQL plugin or external MySQL database
-- Set the same environment variables
-- Start with `gunicorn app:app`
-
-### PythonAnywhere
-
-- Upload the project
-- Create a virtualenv and install `requirements.txt`
-- Configure the WSGI file to point to `app:app`
-- Set environment variables in the web app configuration
-
 ## Security Improvements You Can Add Next
 
 - Email delivery for password reset links
