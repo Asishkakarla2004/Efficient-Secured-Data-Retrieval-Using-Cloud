@@ -25,6 +25,9 @@ def create_app() -> Flask:
         elif database_url.startswith("mysql://"):
             database_url = database_url.replace("mysql://", "mysql+pymysql://", 1)
 
+        if database_url.startswith("postgresql://") and "sslmode=" not in database_url:
+            database_url = f"{database_url}?sslmode=require" if "?" not in database_url else f"{database_url}&sslmode=require"
+
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-secret-key")
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url or "sqlite:///secure_cloud_data_access.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
