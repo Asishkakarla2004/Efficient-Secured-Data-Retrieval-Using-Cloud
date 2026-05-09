@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from flask import Flask
 from dotenv import load_dotenv
+from flask_migrate import Migrate
 
 from .admin.routes import admin_bp
 from .authentication.routes import auth_bp
@@ -52,6 +53,7 @@ def create_app() -> Flask:
 
     db.init_app(app)
     migrate.init_app(app, db)
+    Migrate(app, db)
     csrf.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
