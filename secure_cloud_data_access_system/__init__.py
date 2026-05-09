@@ -16,7 +16,7 @@ def create_app() -> Flask:
     load_dotenv()
     app = Flask(__name__, instance_relative_config=False)
 
-    database_url = os.getenv("DATABASE_URL", "")
+    database_url = os.environ.get("DATABASE_URL", "")
     database_url = database_url.strip().strip('"').strip("'")
     if database_url:
         if database_url.startswith("postgres://"):
@@ -24,7 +24,7 @@ def create_app() -> Flask:
         elif database_url.startswith("mysql://"):
             database_url = database_url.replace("mysql://", "mysql+pymysql://", 1)
 
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "change-this-secret-key")
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-this-secret-key")
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url or "sqlite:///secure_cloud_data_access.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "uploads")
