@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+instance/
+.env
+.DS_Store
+run.err.log
+run.out.log
+flask.err.log
+flask.out.log
+*.sqlite3
+.vscode/

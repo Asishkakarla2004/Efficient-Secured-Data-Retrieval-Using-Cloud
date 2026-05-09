@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-4xl glass-card p-8">
+  <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+    <div>
+      <span class="section-kicker">User Profile</span>
+      <h1 class="mt-3 font-display text-4xl text-white">Identity & Activity</h1>
+      <p class="mt-3 text-slate-300">Manage your profile while maintaining secure access posture across the platform.</p>
+    </div>
+    <form method="post" class="space-y-4">
+      {{ form.hidden_tag() }}
+      <div>
+        {{ form.full_name.label(class="form-label") }}
+        {{ form.full_name(class="form-input") }}
+      </div>
+      <div>
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-input") }}
+      </div>
+      {{ form.submit(class="btn-primary") }}
+    </form>
+  </div>
+</section>
+{% endblock %}

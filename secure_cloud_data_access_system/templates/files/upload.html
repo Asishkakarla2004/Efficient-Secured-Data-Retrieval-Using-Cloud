@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Upload Secure File{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-5xl grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+  <div class="glass-card p-8">
+    <span class="section-kicker">Secure Upload</span>
+    <h1 class="mt-3 font-display text-4xl text-white">Encrypt Before Storage</h1>
+    <p class="mt-3 text-slate-300">Every upload is processed through the optimized Blowfish engine before it enters cloud storage.</p>
+    <img src="{{ url_for('static', filename='assets/images/upload-hero.svg') }}" alt="Upload graphic" class="mt-8 w-full">
+    {% if latest_stats %}
+      <div class="mt-6 grid gap-3 md:grid-cols-2">
+        <div class="metric-card"><p class="metric-label">Status</p><p class="metric-value text-emerald-300">{{ latest_stats.status }}</p></div>
+        <div class="metric-card"><p class="metric-label">Speed</p><p class="metric-value">{{ latest_stats.duration_ms }} ms</p></div>
+      </div>
+    {% endif %}
+  </div>
+  <form method="post" enctype="multipart/form-data" class="glass-card p-8 space-y-5">
+    {{ form.hidden_tag() }}
+    <div>
+      {{ form.file.label(class="form-label") }}
+      {{ form.file(class="form-input file:mr-4 file:rounded-full file:border-0 file:bg-cyan-400/20 file:px-4 file:py-2 file:text-cyan-100") }}
+    </div>
+    <div>
+      {{ form.access_scope.label(class="form-label") }}
+      {{ form.access_scope(class="form-input") }}
+    </div>
+    {{ form.submit(class="btn-primary w-full justify-center") }}
+  </form>
+</section>
+{% endblock %}

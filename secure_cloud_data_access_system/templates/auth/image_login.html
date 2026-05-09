@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Image Verification{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-5xl glass-card p-8">
+  <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <span class="section-kicker">Stage 2</span>
+      <h1 class="mt-3 font-display text-4xl text-white">Graphical Password Verification</h1>
+      <p class="mt-3 text-slate-300">Welcome back, {{ user.full_name }}. Recreate your secure image sequence to unlock cloud access.</p>
+    </div>
+    <span id="image-sequence-display" class="rounded-full border border-cyan-300/30 px-3 py-1 text-xs text-cyan-100">0 selected</span>
+  </div>
+  <form method="post" class="space-y-6">
+    {{ form.hidden_tag() }}
+    <input type="hidden" name="image_pattern" id="image_pattern">
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+      {% for image in image_choices %}
+        <button type="button" class="image-card" data-image="{{ image }}">
+          <img src="{{ url_for('static', filename='assets/images/' ~ image) }}" alt="Authentication image {{ loop.index }}" class="h-28 w-full rounded-2xl object-cover">
+          <span class="image-badge"></span>
+        </button>
+      {% endfor %}
+    </div>
+    <div class="flex flex-wrap gap-4">
+      {{ form.submit(class="btn-primary") }}
+      <button type="button" class="btn-secondary" data-reset-images="true">Reset Sequence</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

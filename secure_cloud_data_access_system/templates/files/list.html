@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Secure Files{% endblock %}
+{% block content %}
+<section class="space-y-6">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <span class="section-kicker">Secure Retrieval</span>
+      <h1 class="mt-3 font-display text-4xl text-white">Encrypted File Repository</h1>
+      <p class="mt-3 text-slate-300">Search, filter, and retrieve your cloud files with auditable secure access.</p>
+    </div>
+    <a href="{{ url_for('files.upload') }}" class="btn-primary">Upload New File</a>
+  </div>
+
+  <form method="get" class="glass-card grid gap-4 p-5 md:grid-cols-4">
+    <input type="text" name="search" value="{{ request.args.get('search', '') }}" placeholder="Search files" class="form-input">
+    <select name="type" class="form-input">
+      <option value="">All Types</option>
+      {% for option in ['PDF', 'DOCX', 'Image', 'ZIP', 'Text'] %}
+        <option value="{{ option }}" {% if request.args.get('type') == option %}selected{% endif %}>{{ option }}</option>
+      {% endfor %}
+    </select>
+    <input type="date" name="date" value="{{ request.args.get('date', '') }}" class="form-input">
+    <button class="btn-secondary justify-center" type="submit">Filter Results</button>
+  </form>
+
+  <div class="glass-card overflow-hidden">
+    <table class="w-full text-left text-sm">
+      <thead class="bg-white/5 text-slate-300">
+        <tr>
+          <th class="px-4 py-4">Filename</th>
+          <th class="px-4 py-4">Type</th>
+          <th class="px-4 py-4">Encrypted</th>
+          <th class="px-4 py-4">Access</th>
+          <th class="px-4 py-4">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+          <tr class="border-t border-white/10">
+            <td class="px-4 py-4">{{ file.original_filename }}</td>
+            <td class="px-4 py-4">{{ file.file_type }}</td>
+            <td class="px-4 py-4">{{ file.encryption_speed_ms }} ms</td>
+            <td class="px-4 py-4">{{ file.access_scope }}</td>
+            <td class="px-4 py-4">
+              <a href="{{ url_for('files.download', file_id=file.id) }}" class="btn-secondary">Download</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="px-4 py-6 text-slate-400">No files match your filters.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

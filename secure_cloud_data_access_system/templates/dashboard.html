@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="space-y-8">
+  <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+    <div class="glass-card p-8">
+      <span class="section-kicker">User Dashboard</span>
+      <h1 class="mt-3 font-display text-5xl text-white">Secure Operations Center</h1>
+      <p class="mt-3 max-w-2xl text-slate-300">Track encrypted uploads, secure retrieval activity, and authentication events from a modern cloud command panel.</p>
+      <div class="mt-6 flex flex-wrap gap-4">
+        <a href="{{ url_for('files.upload') }}" class="btn-primary">Upload File</a>
+        <a href="{{ url_for('files.list_files') }}" class="btn-secondary">Browse Files</a>
+      </div>
+    </div>
+    <div class="glass-card p-6">
+      <img src="{{ url_for('static', filename='assets/images/dashboard-hero.svg') }}" alt="Dashboard security visual" class="w-full">
+    </div>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="metric-card"><p class="metric-label">Stored Files</p><p class="metric-value">{{ metrics.files }}</p></div>
+    <div class="metric-card"><p class="metric-label">Downloads</p><p class="metric-value">{{ metrics.downloads }}</p></div>
+    <div class="metric-card"><p class="metric-label">Security Events</p><p class="metric-value">{{ metrics.security_events }}</p></div>
+    <div class="metric-card"><p class="metric-label">Avg Encrypt Time</p><p class="metric-value">{{ metrics.avg_encrypt_ms }} ms</p></div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-2">
+    <div class="glass-card p-6">
+      <h2 class="panel-title">Recent Files</h2>
+      <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-white/5 text-slate-300">
+            <tr><th class="px-4 py-3">Name</th><th class="px-4 py-3">Type</th><th class="px-4 py-3">Status</th></tr>
+          </thead>
+          <tbody>
+            {% for file in files %}
+              <tr class="border-t border-white/10">
+                <td class="px-4 py-3">{{ file.original_filename }}</td>
+                <td class="px-4 py-3">{{ file.file_type }}</td>
+                <td class="px-4 py-3 text-emerald-300">{{ file.encryption_status }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="3" class="px-4 py-4 text-slate-400">No files uploaded yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="glass-card p-6">
+      <h2 class="panel-title">Encryption Logs</h2>
+      <div class="mt-4 space-y-3">
+        {% for log in encryption_logs %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-white">{{ log.operation|capitalize }}</span>
+              <span class="text-cyan-200">{{ log.duration_ms }} ms</span>
+            </div>
+            <p class="mt-2 text-sm text-slate-300">{{ log.details }}</p>
+          </div>
+        {% else %}
+          <p class="text-slate-400">No encryption activity yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

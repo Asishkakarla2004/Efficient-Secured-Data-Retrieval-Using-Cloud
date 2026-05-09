@@ -1,0 +1,88 @@
+CREATE DATABASE IF NOT EXISTS secure_cloud_data_access;
+USE secure_cloud_data_access;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(120) NOT NULL,
+  username VARCHAR(80) NOT NULL UNIQUE,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'user',
+  image_pattern_encrypted TEXT NOT NULL,
+  image_pattern_hint VARCHAR(255),
+  failed_login_attempts INT NOT NULL DEFAULT 0,
+  is_locked BOOLEAN NOT NULL DEFAULT FALSE,
+  reset_token VARCHAR(255),
+  reset_token_expiry DATETIME,
+  last_login_at DATETIME,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE image_authentication (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL UNIQUE,
+  pattern_preview VARCHAR(255) NOT NULL,
+  image_count INT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_image_auth_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE uploaded_files (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  original_filename VARCHAR(255) NOT NULL,
+  stored_filename VARCHAR(255) NOT NULL UNIQUE,
+  file_type VARCHAR(20) NOT NULL,
+  mime_type VARCHAR(100) NOT NULL,
+  file_size BIGINT NOT NULL,
+  storage_path VARCHAR(255) NOT NULL,
+  encryption_status VARCHAR(20) NOT NULL DEFAULT 'encrypted',
+  encryption_speed_ms FLOAT,
+  decryption_speed_ms FLOAT,
+  access_scope VARCHAR(30) NOT NULL DEFAULT 'private',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_uploaded_files_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE encryption_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  file_id INT NOT NULL,
+  user_id INT NOT NULL,
+  operation VARCHAR(20) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  algorithm VARCHAR(50) NOT NULL DEFAULT 'Optimized Blowfish',
+  duration_ms FLOAT NOT NULL,
+  details TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_encryption_file FOREIGN KEY (file_id) REFERENCES uploaded_files(id) ON DELETE CASCADE,
+  CONSTRAINT fk_encryption_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE access_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  file_id INT,
+  action VARCHAR(30) NOT NULL,
+  ip_address VARCHAR(64),
+  user_agent VARCHAR(255),
+  status VARCHAR(20) NOT NULL,
+  details TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_access_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_access_file FOREIGN KEY (file_id) REFERENCES uploaded_files(id) ON DELETE SET NULL
+);
+
+CREATE TABLE admin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(80) NOT NULL UNIQUE,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  last_login_at DATETIME,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

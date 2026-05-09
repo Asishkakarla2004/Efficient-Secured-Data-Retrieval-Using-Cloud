@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<section class="space-y-8">
+  <div class="glass-card p-8">
+    <span class="section-kicker">Admin Control Center</span>
+    <h1 class="mt-3 font-display text-5xl text-white">Security Oversight Dashboard</h1>
+    <p class="mt-3 max-w-3xl text-slate-300">Monitor user activity, upload and download patterns, failed login attempts, and encryption performance across the platform.</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="metric-card"><p class="metric-label">Users</p><p class="metric-value">{{ metrics.total_users }}</p></div>
+    <div class="metric-card"><p class="metric-label">Files</p><p class="metric-value">{{ metrics.total_files }}</p></div>
+    <div class="metric-card"><p class="metric-label">Failed Logins</p><p class="metric-value">{{ metrics.failed_attempts }}</p></div>
+    <div class="metric-card"><p class="metric-label">Avg Crypto Time</p><p class="metric-value">{{ metrics.avg_encryption_ms }} ms</p></div>
+  </div>
+
+  <div class="grid gap-6 xl:grid-cols-2">
+    <div class="glass-card p-6">
+      <h2 class="panel-title">Recent Users</h2>
+      <div class="mt-4 space-y-3">
+        {% for user in users %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-white">{{ user.full_name }}</span>
+              <span class="text-slate-300">@{{ user.username }}</span>
+            </div>
+            <p class="mt-2 text-sm text-slate-400">{{ user.email }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="glass-card p-6">
+      <h2 class="panel-title">Recent Uploads</h2>
+      <div class="mt-4 space-y-3">
+        {% for file in recent_uploads %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-white">{{ file.original_filename }}</span>
+              <span class="text-cyan-200">{{ file.encryption_speed_ms }} ms</span>
+            </div>
+            <p class="mt-2 text-sm text-slate-400">{{ file.file_type }} • {{ file.access_scope }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-6 xl:grid-cols-2">
+    <div class="glass-card p-6">
+      <h2 class="panel-title">Authentication Logs</h2>
+      <div class="mt-4 space-y-3">
+        {% for log in recent_logs %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-white">{{ log.action }}</span>
+              <span class="{{ 'text-emerald-300' if log.status == 'success' else 'text-rose-300' }}">{{ log.status }}</span>
+            </div>
+            <p class="mt-2 text-sm text-slate-400">{{ log.details or 'Audit event recorded.' }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="glass-card p-6">
+      <h2 class="panel-title">Encryption Performance</h2>
+      <div class="mt-4 space-y-3">
+        {% for log in encryption_logs %}
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-white">{{ log.operation }}</span>
+              <span class="text-cyan-200">{{ log.duration_ms }} ms</span>
+            </div>
+            <p class="mt-2 text-sm text-slate-400">{{ log.details }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
